@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Tra cứu Phụ gia - TT 24 Online</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #d35400; --accent: #27ae60; --bg: #f2f3f4; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: #333; margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1250px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+        h1 { color: var(--primary); text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; }
+        
+        /* Box Báo cáo hệ thống */
+        #reportPanel { background: #fdfefe; border: 2px dashed #3498db; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
+        #reportPanel h4 { margin: 0 0 10px 0; color: #2980b9; font-size: 18px;}
+        #reportList { list-style: none; margin: 0; padding: 0; color: #d35400; font-weight: bold; font-size: 15px; }
+        .success-report { background: #e8f8f5 !important; border: 2px solid #1abc9c !important; text-align: left !important;}
+
+        /* Box Tìm kiếm & Gợi ý */
+        .search-container { position: relative; margin-bottom: 30px; display: none; }
+        .search-box { display: flex; gap: 10px; }
+        .search-box input { flex: 1; padding: 16px; font-size: 18px; border: 2px solid #bdc3c7; border-radius: 8px; outline: none; transition: 0.3s; font-weight: bold;}
+        .search-box input:focus { border-color: var(--secondary); box-shadow: 0 0 8px rgba(211, 84, 0, 0.2); }
+        
+        .suggestions-box { position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border: 1px solid #ccc; border-radius: 0 0 8px 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 350px; overflow-y: auto; z-index: 1000; display: none; }
+        .suggestion-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; align-items: center; font-size: 15px;}
+        .suggestion-item:hover { background-color: #fdf2e9; color: var(--secondary); padding-left: 20px;}
+        .suggestion-item strong { display: inline-block; width: 90px; color: var(--primary); font-size: 16px;}
+        
+        /* Hiển thị kết quả */
+        .result-card { background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: none; }
+        .card-header { font-size: 18px; color: #fff; background: var(--primary); padding: 15px; border-radius: 5px; margin-top: 0; display: flex; justify-content: space-between; align-items: center;}
+        
+        .gmp-badge { background-color: var(--accent); color: white; padding: 6px 15px; border-radius: 20px; font-size: 14px; font-weight: bold;}
+        .not-gmp { background-color: #e74c3c; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 15px; }
+        th, td { padding: 15px; text-align: left; border: 1px solid #ddd; vertical-align: top; }
+        th { background-color: #f4f6f7; color: var(--primary); }
+        tr:nth-child(even) { background-color: #fafbfc; }
+        tr:hover { background-color: #fdf2e9; }
+        
+        .desc-text { font-size: 14px; color: #555; margin-top: 8px; display: block; line-height: 1.5; background: #fdfefe; padding: 10px; border-left: 4px solid #3498db; border-radius: 4px;}
+        .note-text { font-size: 14px; color: #d35400; background: #fef5e7; padding: 10px; border-radius: 4px; display: block; margin-top: 8px; border-left: 4px solid #e67e22; line-height: 1.5;}
+        .shared-group-text { font-size: 14px; color: #117864; background: #e8f8f5; padding: 10px; border-radius: 4px; margin-top: 8px; border-left: 4px solid #1abc9c; line-height: 1.5;}
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>HỆ THỐNG TRA CỨU PHỤ GIA THỰC PHẨM (TT24)</h1>
+
+    <div id="reportPanel">
+        <h4 id="reportTitle">Đang khởi động hệ thống...</h4>
+        <ul id="reportList">
+            <li>⏳ Đang tự động tải dữ liệu từ máy chủ (DuLieu_PhuGia_ToanDien.xlsx)...</li>
+        </ul>
+    </div>
+
+    <div class="search-container" id="searchContainer">
+        <h3 style="color: var(--primary); margin-top: 0;">Bắt đầu tra cứu</h3>
+        <div class="search-box">
+            <input type="text" id="insInput" placeholder="Nhập mã INS (VD: Gõ '101' để xem 101(i), 101(ii), 101(iii))..." autocomplete="off">
+        </div>
+        <div id="suggestions" class="suggestions-box"></div>
+    </div>
+
+    <div id="info-section" class="result-card">
+        <h3 class="card-header">Thông tin Cơ bản (Trích từ Phụ lục 1 & 3)</h3>
+        <table id="info-table">
+            <thead><tr><th width="15%">Mã INS</th><th width="25%">Tên Tiếng Việt</th><th width="25%">Tên Tiếng Anh</th><th width="35%">Chức năng</th></tr></thead>
+            <tbody id="info-body"></tbody>
+        </table>
+    </div>
+
+    <div id="usage-section" class="result-card">
+        <h3 class="card-header">Mức sử dụng & Nhóm thực phẩm (Trích từ Phụ lục 2A, 2B, 4 & Ghi chú)</h3>
+        <table id="usage-table">
+            <thead><tr><th width="10%">Mã Nhóm</th><th width="35%">Nhóm thực phẩm & Mô tả chi tiết</th><th width="15%">Giới hạn ML (mg/kg)</th><th width="40%">Ghi chú & Giải thích chi tiết</th></tr></thead>
+            <tbody id="usage-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    let db = { pl1: [], pl2: [], pl3: new Set(), pl4: {}, ghiChu: {} };
+
+    // Hàm làm sạch khoảng trắng thừa
+    const cleanIns = (str) => String(str).replace(/\s+/g, '');
+
+    // TỰ ĐỘNG TẢI FILE KHI TRANG WEB VỪA MỞ LÊN
+    window.addEventListener('DOMContentLoaded', () => {
+        const reportPanel = document.getElementById('reportPanel');
+        const reportList = document.getElementById('reportList');
+        const reportTitle = document.getElementById('reportTitle');
+
+        // Tên file Excel bắt buộc phải nằm cùng thư mục với file index.html trên Github
+        const excelFileUrl = 'DuLieu_PhuGia_ToanDien.xlsx';
+
+        fetch(excelFileUrl)
+            .then(response => {
+                if (!response.ok) throw new Error("Không tìm thấy file Excel trên máy chủ. Hãy chắc chắn bạn đã tải file DuLieu_PhuGia_ToanDien.xlsx lên Github.");
+                return response.arrayBuffer();
+            })
+            .then(data => {
+                try {
+                    const workbook = XLSX.read(new Uint8Array(data), {type: 'array'});
+                    
+                    workbook.SheetNames.forEach(sheetName => {
+                        const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
+                        if(rawData.length === 0) return;
+
+                        const sName = sheetName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '');
+
+                        // ==================== PHỤ LỤC 1 ====================
+                        if (sName.includes("phuluc1")) {
+                            rawData.forEach(row => {
+                                let ins = cleanIns(row[1] || row[0] || "");
+                                if (/^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(ins)) {
+                                    let tv = String(row[2] || row[1] || "").trim();
+                                    let ta = String(row[3] || row[2] || "").trim();
+                                    let func = String(row[4] || row[3] || "").trim();
+                                    if (tv.toLowerCase() !== "tiếng việt" && !db.pl1.find(x => x.ins === ins)) {
+                                        db.pl1.push({ ins, tv, ta, chucNang: func });
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // ==================== PHỤ LỤC 3 ====================
+                        else if (sName.includes("phuluc3")) {
+                            rawData.forEach(row => {
+                                let ins = cleanIns(row[1] || row[0] || "");
+                                if (/^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(ins)) db.pl3.add(ins);
+                            });
+                        }
+
+                        // ==================== PHỤ LỤC 4 ====================
+                        else if (sName.includes("phuluc4")) {
+                            rawData.forEach(row => {
+                                let maNhom = String(row[0] || "").trim();
+                                if (/^\d{2}\./.test(maNhom)) {
+                                    db.pl4[maNhom] = { ten: String(row[1] || "").trim(), moTa: String(row[2] || "").trim() };
+                                }
+                            });
+                        }
+
+                        // ==================== GHI CHÚ ====================
+                        else if (sName.includes("ghichu") || sName.includes("giaithich")) {
+                            rawData.forEach(row => {
+                                let so = String(row[0] || "").trim();
+                                let desc = String(row[1] || "").trim();
+                                if (so && desc && so.toLowerCase() !== "số ghi chú" && !so.includes("Unnamed")) {
+                                    db.ghiChu[so] = desc;
+                                }
+                            });
+                        }
+
+                        // ==================== PHỤ LỤC 2A & 2B (NHÓM ĐA LUỒNG) ====================
+                        else if (sName.includes("2a") || sName.includes("2b")) {
+                            let currentINSList = [];
+                            let hasDataSinceLastINS = false;
+                            let isPL2B = sName.includes("2b");
+
+                            rawData.forEach(row => {
+                                let col0 = String(row[0] || "").trim();
+                                let col1 = String(row[1] || "").trim();
+                                let col2 = String(row[2] || "").trim();
+                                let col3 = String(row[3] || "").trim();
+
+                                let cleanC0 = cleanIns(col0);
+                                let cleanC1 = cleanIns(col1);
+
+                                let possibleIns = /^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(cleanC0) ? cleanC0 : (/^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(cleanC1) ? cleanC1 : "");
+                                let isML = (v) => /^\d+([.,]\d+)?$/.test(v) || v.toUpperCase() === 'GMP';
+                                
+                                let isDataRow = false;
+                                let maNhom = "", tenNhom = "", ml = "", ghiChu = "";
+
+                                if (isPL2B) {
+                                    if (isML(col2)) {
+                                        isDataRow = true;
+                                        maNhom = "Thuộc 2B"; tenNhom = col0; ml = col2; ghiChu = col3;
+                                    }
+                                } else {
+                                    if (/^\d{2}\.\d/.test(col0) && isML(col2)) {
+                                        isDataRow = true;
+                                        maNhom = col0; tenNhom = col1; ml = col2; ghiChu = col3;
+                                    }
+                                }
+
+                                if (possibleIns) {
+                                    if (hasDataSinceLastINS) {
+                                        currentINSList = [];
+                                        hasDataSinceLastINS = false;
+                                    }
+                                    if (!currentINSList.includes(possibleIns)) {
+                                        currentINSList.push(possibleIns);
+                                    }
+                                }
+
+                                if (isDataRow) {
+                                    hasDataSinceLastINS = true;
+                                    let sharedGroup = [...currentINSList];
+                                    
+                                    currentINSList.forEach(ins => {
+                                        db.pl2.push({ ins: ins, maNhom, tenNhom, ml, ghiChu, sharedGroup });
+                                    });
+                                }
+                            });
+                        }
+                    });
+
+                    // XỬ LÝ GIAO DIỆN SAU KHI NẠP XONG
+                    if (db.pl1.length > 0) {
+                        reportPanel.className = "success-report";
+                        reportTitle.innerHTML = "✅ Tải dữ liệu thành công!";
+                        reportTitle.style.color = "#117864";
+                        reportList.style.color = "#148f77";
+                        
+                        // Rút gọn báo cáo lại cho giao diện chuyên nghiệp
+                        reportList.innerHTML = `
+                            <li>📌 Hệ thống đã nạp ${db.pl1.length} mã phụ gia, ${db.pl2.length} giới hạn ML và ${Object.keys(db.pl4).length} nhóm thực phẩm.</li>
+                            <li>📌 Bạn có thể tra cứu ngay!</li>
+                        `;
+                        
+                        // Tự động đóng báo cáo sau 3 giây để màn hình gọn gàng
+                        setTimeout(() => { reportPanel.style.display = 'none'; }, 3500);
+
+                        document.getElementById('searchContainer').style.display = 'block';
+                    } else {
+                        throw new Error("File Excel có tồn tại nhưng cấu trúc Sheet không đúng quy định.");
+                    }
+
+                } catch (error) {
+                    reportTitle.innerHTML = "⚠️ LỖI XỬ LÝ DỮ LIỆU";
+                    reportTitle.style.color = "red";
+                    reportList.innerHTML = `<li style='color:red;'>${error.message}</li>`;
+                }
+            })
+            .catch(error => {
+                reportTitle.innerHTML = "⚠️ LỖI KẾT NỐI MÁY CHỦ";
+                reportTitle.style.color = "red";
+                reportList.innerHTML = `<li style='color:red;'>${error.message}</li>`;
+            });
+    });
+
+    // --- TÍNH NĂNG GỢI Ý ---
+    const inputEl = document.getElementById("insInput");
+    const sugBox = document.getElementById("suggestions");
+
+    inputEl.addEventListener("input", function() {
+        const val = cleanIns(this.value.trim().toUpperCase());
+        sugBox.innerHTML = "";
+        if (!val) { sugBox.style.display = "none"; return; }
+
+        const matches = db.pl1.filter(item => item.ins.toUpperCase().includes(val));
+
+        if (matches.length > 0) {
+            sugBox.style.display = "block";
+            matches.slice(0, 15).forEach(match => { 
+                const div = document.createElement("div");
+                div.className = "suggestion-item";
+                div.innerHTML = `<strong>${match.ins}</strong> - ${match.tv || match.ta || 'Chưa có tên'}`;
+                
+                div.onclick = function() {
+                    inputEl.value = match.ins; 
+                    sugBox.style.display = "none"; 
+                    executeSearch(); 
+                };
+                sugBox.appendChild(div);
+            });
+        } else {
+            sugBox.style.display = "block";
+            sugBox.innerHTML = `<div class="suggestion-item" style="color:red; justify-content:center;">Không tìm thấy mã INS chứa "${val}"</div>`;
+        }
+    });
+
+    document.addEventListener("click", e => { if (e.target.id !== "insInput") sugBox.style.display = "none"; });
+
+    // --- HÀM TRA CỨU SIÊU CHI TIẾT ---
+    function executeSearch() {
+        const input = cleanIns(document.getElementById("insInput").value.trim().toUpperCase());
+        if (!input) return;
+
+        sugBox.style.display = "none";
+        document.getElementById("info-section").style.display = 'none';
+        document.getElementById("usage-section").style.display = 'none';
+
+        let targetGroup = new Set();
+        targetGroup.add(input); 
+
+        const matchedPL2 = db.pl2.filter(item => item.ins.toUpperCase() === input);
+        matchedPL2.forEach(item => {
+            if (item.sharedGroup && item.sharedGroup.length > 0) {
+                item.sharedGroup.forEach(code => targetGroup.add(code.toUpperCase()));
+            }
+        });
+
+        let sortedGroup = Array.from(targetGroup).sort((a, b) => a.localeCompare(b));
+
+        let infoHTML = "";
+        let foundInfo = false;
+
+        sortedGroup.forEach(insCodeUpper => {
+            const info = db.pl1.find(x => x.ins.toUpperCase() === insCodeUpper);
+            if (info) {
+                foundInfo = true;
+                const isGMP = Array.from(db.pl3).some(gmpIns => gmpIns.toUpperCase() === insCodeUpper);
+                let gmpBadge = isGMP ? '<div style="margin-top:5px;"><span class="gmp-badge">✔ Chuẩn GMP</span></div>' : '';
+
+                infoHTML += `<tr>
+                    <td><strong style="font-size:16px">${info.ins}</strong>${gmpBadge}</td>
+                    <td>${info.tv || "-"}</td>
+                    <td>${info.ta || "-"}</td>
+                    <td>${info.chucNang || "-"}</td>
+                </tr>`;
+            }
+        });
+
+        if (foundInfo) {
+            document.getElementById("info-body").innerHTML = infoHTML;
+            document.getElementById("info-section").style.display = "block";
+        } else {
+            alert(`Mã INS ${input} không có trong hệ thống! Vui lòng chọn từ danh sách gợi ý.`);
+            return;
+        }
+
+        if (matchedPL2.length > 0) {
+            document.getElementById("usage-body").innerHTML = matchedPL2.map(item => {
+                
+                let pl4Data = db.pl4[item.maNhom];
+                let tenNhomChuan = pl4Data ? pl4Data.ten : item.tenNhom;
+                let moTaHTML = (pl4Data && pl4Data.moTa) 
+                    ? `<div class="desc-text"><strong>Mô tả nhóm:</strong> ${pl4Data.moTa}</div>` 
+                    : "";
+
+                let sharedHTML = "";
+                if (item.sharedGroup && item.sharedGroup.length > 1) {
+                    let allDetails = item.sharedGroup.map(oIns => {
+                        let oInfo = db.pl1.find(x => x.ins === oIns);
+                        let oName = oInfo ? (oInfo.tv || oInfo.ta || "") : "";
+                        return `<strong>${oIns}</strong> ${oName ? '('+oName+')' : ''}`;
+                    }).join('; ');
+                    sharedHTML = `<div class="shared-group-text"><strong>🔄 Dùng chung mức ML cho nhóm:</strong><br> ${allDetails}</div>`;
+                }
+
+                let ghiChuChiTiet = "";
+                if (item.ghiChu && item.ghiChu.toLowerCase() !== "nan") {
+                    let noteKeys = item.ghiChu.split(/[,&;]/).map(k => k.trim());
+                    noteKeys.forEach(k => {
+                        if (k) {
+                            let explanation = db.ghiChu[k] || db.ghiChu["XS"+k] || "(Chưa có giải thích cho ghi chú này trong CSDL)";
+                            ghiChuChiTiet += `<div class="note-text"><strong>Ghi chú ${k}:</strong> ${explanation}</div>`;
+                        }
+                    });
+                }
+                
+                return `<tr>
+                    <td><strong style="font-size:15px">${item.maNhom}</strong></td>
+                    <td>
+                        <strong>${tenNhomChuan}</strong>
+                        ${moTaHTML}
+                        ${sharedHTML}
+                    </td>
+                    <td><strong style="color: #c0392b; font-size:16px">${item.ml}</strong></td>
+                    <td>
+                        <strong style="font-size: 15px;">${item.ghiChu && item.ghiChu.toLowerCase() !== "nan" ? item.ghiChu : '-'}</strong>
+                        ${ghiChuChiTiet}
+                    </td>
+                </tr>`;
+            }).join('');
+            document.getElementById("usage-section").style.display = "block";
+        }
+    }
+
+    inputEl.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            const firstSuggestion = document.querySelector(".suggestion-item strong");
+            if (firstSuggestion && cleanIns(this.value.toUpperCase()) !== cleanIns(firstSuggestion.innerText.toUpperCase())) {
+                this.value = firstSuggestion.innerText;
+            }
+            executeSearch();
+        }
+    });
+</script>
+</body>
+</html>
