@@ -32,8 +32,13 @@
         .result-card { background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: none; }
         .card-header { font-size: 18px; color: #fff; background: var(--primary); padding: 15px; border-radius: 5px; margin-top: 0; display: flex; justify-content: space-between; align-items: center;}
         
-        .gmp-badge { background-color: var(--accent); color: white; padding: 6px 15px; border-radius: 20px; font-size: 14px; font-weight: bold;}
-        .not-gmp { background-color: #e74c3c; }
+        /* Cải tiến Badge GMP (Đặt trên Header) */
+        #gmpStatus { display: flex; align-items: center; }
+        .gmp-badge { background-color: var(--accent); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; transition: 0.2s; white-space: nowrap;}
+        .gmp-badge.clickable { cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 1px solid #fff; }
+        .gmp-badge.clickable:hover { background-color: #219a52; transform: scale(1.02); }
+        .not-gmp { background-color: #e74c3c; cursor: default; }
+        .not-gmp:hover { background-color: #e74c3c; transform: none; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 15px; }
         th, td { padding: 15px; text-align: left; border: 1px solid #ddd; vertical-align: top; }
@@ -44,6 +49,16 @@
         .desc-text { font-size: 14px; color: #555; margin-top: 8px; display: block; line-height: 1.5; background: #fdfefe; padding: 10px; border-left: 4px solid #3498db; border-radius: 4px;}
         .note-text { font-size: 14px; color: #d35400; background: #fef5e7; padding: 10px; border-radius: 4px; display: block; margin-top: 8px; border-left: 4px solid #e67e22; line-height: 1.5;}
         .shared-group-text { font-size: 14px; color: #117864; background: #e8f8f5; padding: 10px; border-radius: 4px; margin-top: 8px; border-left: 4px solid #1abc9c; line-height: 1.5;}
+
+        /* MODAL cho Danh sách GMP */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
+        .modal-content { background-color: #fff; margin: 3% auto; padding: 25px; border-radius: 10px; width: 85%; max-width: 900px; max-height: 85vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.3); animation: slideDown 0.3s; }
+        @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .close-btn:hover { color: #e74c3c; }
+        .modal-title { color: var(--primary); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .gmp-table-container { max-height: 60vh; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px;}
+        .gmp-table th { position: sticky; top: 0; background-color: var(--primary); color: #fff; z-index: 10;}
     </style>
 </head>
 <body>
@@ -67,7 +82,10 @@
     </div>
 
     <div id="info-section" class="result-card">
-        <h3 class="card-header">Thông tin Cơ bản (Trích từ Phụ lục 1 & 3)</h3>
+        <h3 class="card-header">
+            <span>Thông tin Cơ bản (Trích từ Phụ lục 1)</span>
+            <span id="gmpStatus"></span>
+        </h3>
         <table id="info-table">
             <thead><tr><th width="15%">Mã INS</th><th width="25%">Tên Tiếng Việt</th><th width="25%">Tên Tiếng Anh</th><th width="35%">Chức năng</th></tr></thead>
             <tbody id="info-body"></tbody>
@@ -83,37 +101,48 @@
     </div>
 </div>
 
-<script>
-    let db = { pl1: [], pl2: [], pl3: new Set(), pl4: {}, ghiChu: {} };
+<div id="gmpModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeGMPModal()">&times;</span>
+        <h3 class="modal-title">Đối tượng thực phẩm sử dụng theo GMP (Phụ lục 3)</h3>
+        <p style="color: #27ae60; font-weight: bold; margin-bottom: 15px;">Phụ gia này được phép sử dụng cho các nhóm thực phẩm dưới đây theo định mức Thực hành sản xuất tốt (GMP):</p>
+        <div class="gmp-table-container">
+            <table class="gmp-table" id="gmpTable">
+                <thead><tr><th width="15%">Mã Nhóm</th><th>Tên Nhóm Thực Phẩm</th></tr></thead>
+                <tbody id="gmpModalBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-    // Hàm làm sạch khoảng trắng thừa
+<script>
+    let db = { pl1: [], pl2: [], pl3: new Set(), pl3_categories: [], pl4: {}, ghiChu: {} };
+
     const cleanIns = (str) => String(str).replace(/\s+/g, '');
 
-    // TỰ ĐỘNG TẢI FILE KHI TRANG WEB VỪA MỞ LÊN
     window.addEventListener('DOMContentLoaded', () => {
         const reportPanel = document.getElementById('reportPanel');
         const reportList = document.getElementById('reportList');
         const reportTitle = document.getElementById('reportTitle');
 
-        // Tên file Excel bắt buộc phải nằm cùng thư mục với file index.html trên Github
         const excelFileUrl = 'DuLieu_PhuGia_ToanDien.xlsx';
 
         fetch(excelFileUrl)
             .then(response => {
-                if (!response.ok) throw new Error("Không tìm thấy file Excel trên máy chủ. Hãy chắc chắn bạn đã tải file DuLieu_PhuGia_ToanDien.xlsx lên Github.");
+                if (!response.ok) throw new Error("Không tìm thấy file Excel trên máy chủ.");
                 return response.arrayBuffer();
             })
             .then(data => {
                 try {
                     const workbook = XLSX.read(new Uint8Array(data), {type: 'array'});
-                    
+                    db = { pl1: [], pl2: [], pl3: new Set(), pl3_categories: [], pl4: {}, ghiChu: {} };
+
                     workbook.SheetNames.forEach(sheetName => {
                         const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
                         if(rawData.length === 0) return;
 
                         const sName = sheetName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '');
 
-                        // ==================== PHỤ LỤC 1 ====================
                         if (sName.includes("phuluc1")) {
                             rawData.forEach(row => {
                                 let ins = cleanIns(row[1] || row[0] || "");
@@ -127,16 +156,20 @@
                                 }
                             });
                         }
-                        
-                        // ==================== PHỤ LỤC 3 ====================
                         else if (sName.includes("phuluc3")) {
                             rawData.forEach(row => {
-                                let ins = cleanIns(row[1] || row[0] || "");
-                                if (/^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(ins)) db.pl3.add(ins);
+                                let col0 = String(row[0] || "").trim();
+                                let col1 = String(row[1] || "").trim();
+                                let ins = cleanIns(col1 || col0);
+                                
+                                if (/^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(ins) && !col0.includes(".")) {
+                                    db.pl3.add(ins);
+                                }
+                                if (/^\d{2}\.\d/.test(col0)) {
+                                    db.pl3_categories.push({ maNhom: col0, tenNhom: col1 });
+                                }
                             });
                         }
-
-                        // ==================== PHỤ LỤC 4 ====================
                         else if (sName.includes("phuluc4")) {
                             rawData.forEach(row => {
                                 let maNhom = String(row[0] || "").trim();
@@ -145,8 +178,6 @@
                                 }
                             });
                         }
-
-                        // ==================== GHI CHÚ ====================
                         else if (sName.includes("ghichu") || sName.includes("giaithich")) {
                             rawData.forEach(row => {
                                 let so = String(row[0] || "").trim();
@@ -156,8 +187,6 @@
                                 }
                             });
                         }
-
-                        // ==================== PHỤ LỤC 2A & 2B (NHÓM ĐA LUỒNG) ====================
                         else if (sName.includes("2a") || sName.includes("2b")) {
                             let currentINSList = [];
                             let hasDataSinceLastINS = false;
@@ -203,7 +232,6 @@
                                 if (isDataRow) {
                                     hasDataSinceLastINS = true;
                                     let sharedGroup = [...currentINSList];
-                                    
                                     currentINSList.forEach(ins => {
                                         db.pl2.push({ ins: ins, maNhom, tenNhom, ml, ghiChu, sharedGroup });
                                     });
@@ -212,22 +240,16 @@
                         }
                     });
 
-                    // XỬ LÝ GIAO DIỆN SAU KHI NẠP XONG
                     if (db.pl1.length > 0) {
                         reportPanel.className = "success-report";
                         reportTitle.innerHTML = "✅ Tải dữ liệu thành công!";
                         reportTitle.style.color = "#117864";
                         reportList.style.color = "#148f77";
-                        
-                        // Rút gọn báo cáo lại cho giao diện chuyên nghiệp
                         reportList.innerHTML = `
-                            <li>📌 Hệ thống đã nạp ${db.pl1.length} mã phụ gia, ${db.pl2.length} giới hạn ML và ${Object.keys(db.pl4).length} nhóm thực phẩm.</li>
-                            <li>📌 Bạn có thể tra cứu ngay!</li>
+                            <li>📌 Nạp ${db.pl1.length} mã phụ gia và ${db.pl2.length} giới hạn ML.</li>
+                            <li>📌 Nhận diện ${db.pl3.size} mã đạt chuẩn GMP và <strong>${db.pl3_categories.length} nhóm đối tượng thực phẩm GMP</strong>.</li>
                         `;
-                        
-                        // Tự động đóng báo cáo sau 3 giây để màn hình gọn gàng
-                        setTimeout(() => { reportPanel.style.display = 'none'; }, 3500);
-
+                        setTimeout(() => { reportPanel.style.display = 'none'; }, 4000);
                         document.getElementById('searchContainer').style.display = 'block';
                     } else {
                         throw new Error("File Excel có tồn tại nhưng cấu trúc Sheet không đúng quy định.");
@@ -246,7 +268,6 @@
             });
     });
 
-    // --- TÍNH NĂNG GỢI Ý ---
     const inputEl = document.getElementById("insInput");
     const sugBox = document.getElementById("suggestions");
 
@@ -279,7 +300,27 @@
 
     document.addEventListener("click", e => { if (e.target.id !== "insInput") sugBox.style.display = "none"; });
 
-    // --- HÀM TRA CỨU SIÊU CHI TIẾT ---
+    function showGMPModal() {
+        const tbody = document.getElementById("gmpModalBody");
+        if (db.pl3_categories.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='2'>Không tìm thấy dữ liệu đối tượng thực phẩm GMP trong file Excel.</td></tr>";
+        } else {
+            tbody.innerHTML = db.pl3_categories.map(c => `<tr><td><strong>${c.maNhom}</strong></td><td>${c.tenNhom}</td></tr>`).join("");
+        }
+        document.getElementById("gmpModal").style.display = "block";
+    }
+
+    function closeGMPModal() {
+        document.getElementById("gmpModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById("gmpModal");
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+
     function executeSearch() {
         const input = cleanIns(document.getElementById("insInput").value.trim().toUpperCase());
         if (!input) return;
@@ -287,6 +328,7 @@
         sugBox.style.display = "none";
         document.getElementById("info-section").style.display = 'none';
         document.getElementById("usage-section").style.display = 'none';
+        document.getElementById("gmpStatus").innerHTML = "";
 
         let targetGroup = new Set();
         targetGroup.add(input); 
@@ -302,16 +344,18 @@
 
         let infoHTML = "";
         let foundInfo = false;
+        let isAnyGMP = false;
 
         sortedGroup.forEach(insCodeUpper => {
             const info = db.pl1.find(x => x.ins.toUpperCase() === insCodeUpper);
             if (info) {
                 foundInfo = true;
-                const isGMP = Array.from(db.pl3).some(gmpIns => gmpIns.toUpperCase() === insCodeUpper);
-                let gmpBadge = isGMP ? '<div style="margin-top:5px;"><span class="gmp-badge">✔ Chuẩn GMP</span></div>' : '';
+                if (Array.from(db.pl3).some(gmpIns => gmpIns.toUpperCase() === insCodeUpper)) {
+                    isAnyGMP = true;
+                }
 
                 infoHTML += `<tr>
-                    <td><strong style="font-size:16px">${info.ins}</strong>${gmpBadge}</td>
+                    <td><strong style="font-size:16px">${info.ins}</strong></td>
                     <td>${info.tv || "-"}</td>
                     <td>${info.ta || "-"}</td>
                     <td>${info.chucNang || "-"}</td>
@@ -320,6 +364,12 @@
         });
 
         if (foundInfo) {
+            // Đẩy trạng thái GMP lên Header
+            let gmpBadgeHTML = isAnyGMP 
+                ? `<span class="gmp-badge clickable" onclick="showGMPModal()" title="Click để xem danh sách">✔ Chuẩn GMP (Click xem đối tượng TP)</span>` 
+                : `<span class="gmp-badge not-gmp">✖ Không thuộc GMP</span>`;
+            document.getElementById("gmpStatus").innerHTML = gmpBadgeHTML;
+
             document.getElementById("info-body").innerHTML = infoHTML;
             document.getElementById("info-section").style.display = "block";
         } else {
@@ -332,9 +382,7 @@
                 
                 let pl4Data = db.pl4[item.maNhom];
                 let tenNhomChuan = pl4Data ? pl4Data.ten : item.tenNhom;
-                let moTaHTML = (pl4Data && pl4Data.moTa) 
-                    ? `<div class="desc-text"><strong>Mô tả nhóm:</strong> ${pl4Data.moTa}</div>` 
-                    : "";
+                let moTaHTML = (pl4Data && pl4Data.moTa) ? `<div class="desc-text"><strong>Mô tả nhóm:</strong> ${pl4Data.moTa}</div>` : "";
 
                 let sharedHTML = "";
                 if (item.sharedGroup && item.sharedGroup.length > 1) {
