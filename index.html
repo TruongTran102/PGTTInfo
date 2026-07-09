@@ -69,7 +69,7 @@
     <div id="reportPanel">
         <h4 id="reportTitle">Đang khởi động hệ thống...</h4>
         <ul id="reportList">
-            <li>⏳ Đang tự động tải dữ liệu từ máy chủ (DuLieu_PhuGia_ToanDien.xlsx)...</li>
+            <li>⏳ Đang tự động tải dữ liệu từ máy chủ (DuLieu_PhuGia_ToanDien new.xlsx)...</li>
         </ul>
     </div>
 
@@ -125,7 +125,7 @@
         const reportList = document.getElementById('reportList');
         const reportTitle = document.getElementById('reportTitle');
 
-        const excelFileUrl = 'DuLieu_PhuGia_ToanDien.xlsx';
+        const excelFileUrl = 'DuLieu_PhuGia_ToanDien new.xlsx';
 
         fetch(excelFileUrl)
             .then(response => {
