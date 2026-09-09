@@ -18,7 +18,9 @@
         .success-report { background: #e8f8f5 !important; border: 2px solid #1abc9c !important; text-align: left !important;}
 
         /* Box Tìm kiếm & Gợi ý */
-        .search-container { position: relative; margin-bottom: 30px; display: none; }
+        .search-container { margin-bottom: 30px; display: none; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e1e8ed;}
+        .search-box-wrapper { position: relative; margin-bottom: 15px; }
+        .search-box-wrapper:last-child { margin-bottom: 0; }
         .search-box { display: flex; gap: 10px; }
         .search-box input { flex: 1; padding: 16px; font-size: 18px; border: 2px solid #bdc3c7; border-radius: 8px; outline: none; transition: 0.3s; font-weight: bold;}
         .search-box input:focus { border-color: var(--secondary); box-shadow: 0 0 8px rgba(211, 84, 0, 0.2); }
@@ -26,13 +28,14 @@
         .suggestions-box { position: absolute; top: 100%; left: 0; width: 100%; background: #fff; border: 1px solid #ccc; border-radius: 0 0 8px 8px; box-shadow: 0 8px 16px rgba(0,0,0,0.15); max-height: 350px; overflow-y: auto; z-index: 1000; display: none; }
         .suggestion-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; align-items: center; font-size: 15px;}
         .suggestion-item:hover { background-color: #fdf2e9; color: var(--secondary); padding-left: 20px;}
-        .suggestion-item strong { display: inline-block; width: 90px; color: var(--primary); font-size: 16px;}
+        .suggestion-item strong { display: inline-block; color: var(--primary); font-size: 16px;}
+        .ins-label { display: inline-block; width: 80px; color: var(--secondary); font-weight: bold;}
         
         /* Hiển thị kết quả */
         .result-card { background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; padding: 25px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: none; }
         .card-header { font-size: 18px; color: #fff; background: var(--primary); padding: 15px; border-radius: 5px; margin-top: 0; display: flex; justify-content: space-between; align-items: center;}
         
-        /* Cải tiến Badge GMP (Đặt trên Header) */
+        /* Cải tiến Badge GMP */
         #gmpStatus { display: flex; align-items: center; }
         .gmp-badge { background-color: var(--accent); color: white; padding: 8px 15px; border-radius: 20px; font-size: 14px; font-weight: bold; transition: 0.2s; white-space: nowrap;}
         .gmp-badge.clickable { cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 1px solid #fff; }
@@ -74,11 +77,23 @@
     </div>
 
     <div class="search-container" id="searchContainer">
-        <h3 style="color: var(--primary); margin-top: 0;">Bắt đầu tra cứu</h3>
-        <div class="search-box">
-            <input type="text" id="insInput" placeholder="Nhập mã INS (VD: Gõ '101' để xem 101(i), 101(ii), 101(iii))..." autocomplete="off">
+        <h3 style="color: var(--primary); margin-top: 0; margin-bottom: 15px;">Bắt đầu tra cứu</h3>
+        
+        <!-- Ô tra cứu theo INS -->
+        <div class="search-box-wrapper">
+            <div class="search-box">
+                <input type="text" id="insInput" placeholder="🔍 Tra cứu theo mã INS (VD: Gõ '101' để xem 101(i), 101(ii)...)" autocomplete="off">
+            </div>
+            <div id="insSuggestions" class="suggestions-box"></div>
         </div>
-        <div id="suggestions" class="suggestions-box"></div>
+
+        <!-- Ô tra cứu theo Tên -->
+        <div class="search-box-wrapper">
+            <div class="search-box">
+                <input type="text" id="nameInput" placeholder="🔍 Tra cứu theo Tên phụ gia (Tiếng Việt hoặc Tiếng Anh)..." autocomplete="off">
+            </div>
+            <div id="nameSuggestions" class="suggestions-box"></div>
+        </div>
     </div>
 
     <div id="info-section" class="result-card">
@@ -108,7 +123,8 @@
         <p style="color: #27ae60; font-weight: bold; margin-bottom: 15px;">Phụ gia này được phép sử dụng cho các nhóm thực phẩm dưới đây theo định mức Thực hành sản xuất tốt (GMP):</p>
         <div class="gmp-table-container">
             <table class="gmp-table" id="gmpTable">
-                <thead><tr><th width="15%">Mã Nhóm</th><th>Tên Nhóm Thực Phẩm</th></tr></thead>
+                <!-- Đổi tiêu đề cột thành "Nhóm thực phẩm & Mô tả chi tiết" cho đồng bộ -->
+                <thead><tr><th width="15%">Mã Nhóm</th><th>Nhóm thực phẩm & Mô tả chi tiết</th></tr></thead>
                 <tbody id="gmpModalBody"></tbody>
             </table>
         </div>
@@ -268,44 +284,121 @@
             });
     });
 
-    const inputEl = document.getElementById("insInput");
-    const sugBox = document.getElementById("suggestions");
+    const insInput = document.getElementById("insInput");
+    const insSugBox = document.getElementById("insSuggestions");
+    
+    const nameInput = document.getElementById("nameInput");
+    const nameSugBox = document.getElementById("nameSuggestions");
 
-    inputEl.addEventListener("input", function() {
+    insInput.addEventListener("input", function() {
         const val = cleanIns(this.value.trim().toUpperCase());
-        sugBox.innerHTML = "";
-        if (!val) { sugBox.style.display = "none"; return; }
+        insSugBox.innerHTML = "";
+        if (!val) { insSugBox.style.display = "none"; return; }
 
         const matches = db.pl1.filter(item => item.ins.toUpperCase().includes(val));
 
         if (matches.length > 0) {
-            sugBox.style.display = "block";
+            insSugBox.style.display = "block";
             matches.slice(0, 15).forEach(match => { 
                 const div = document.createElement("div");
                 div.className = "suggestion-item";
-                div.innerHTML = `<strong>${match.ins}</strong> - ${match.tv || match.ta || 'Chưa có tên'}`;
+                div.innerHTML = `<span class="ins-label">${match.ins}</span> <strong>${match.tv || match.ta || 'Chưa có tên'}</strong>`;
                 
                 div.onclick = function() {
-                    inputEl.value = match.ins; 
-                    sugBox.style.display = "none"; 
-                    executeSearch(); 
+                    insInput.value = match.ins; 
+                    nameInput.value = match.tv || match.ta || ""; 
+                    insSugBox.style.display = "none"; 
+                    performSearch(match.ins); 
                 };
-                sugBox.appendChild(div);
+                insSugBox.appendChild(div);
             });
         } else {
-            sugBox.style.display = "block";
-            sugBox.innerHTML = `<div class="suggestion-item" style="color:red; justify-content:center;">Không tìm thấy mã INS chứa "${val}"</div>`;
+            insSugBox.style.display = "block";
+            insSugBox.innerHTML = `<div class="suggestion-item" style="color:red; justify-content:center;">Không tìm thấy mã INS chứa "${val}"</div>`;
         }
     });
 
-    document.addEventListener("click", e => { if (e.target.id !== "insInput") sugBox.style.display = "none"; });
+    nameInput.addEventListener("input", function() {
+        const val = this.value.trim().toLowerCase();
+        nameSugBox.innerHTML = "";
+        if (!val) { nameSugBox.style.display = "none"; return; }
 
+        const matches = db.pl1.filter(item => 
+            (item.tv && item.tv.toLowerCase().includes(val)) || 
+            (item.ta && item.ta.toLowerCase().includes(val))
+        );
+
+        if (matches.length > 0) {
+            nameSugBox.style.display = "block";
+            matches.slice(0, 15).forEach(match => { 
+                const div = document.createElement("div");
+                div.className = "suggestion-item";
+                
+                let displayName = match.tv ? match.tv : match.ta;
+                let otherName = match.tv && match.ta ? `(${match.ta})` : "";
+                
+                div.innerHTML = `<span class="ins-label">${match.ins}</span> <strong>${displayName}</strong> <span style="color:#7f8c8d; margin-left:5px;">${otherName}</span>`;
+                
+                div.onclick = function() {
+                    nameInput.value = displayName; 
+                    insInput.value = match.ins; 
+                    nameSugBox.style.display = "none"; 
+                    performSearch(match.ins); 
+                };
+                nameSugBox.appendChild(div);
+            });
+        } else {
+            nameSugBox.style.display = "block";
+            nameSugBox.innerHTML = `<div class="suggestion-item" style="color:red; justify-content:center;">Không tìm thấy tên phụ gia chứa "${val}"</div>`;
+        }
+    });
+
+    document.addEventListener("click", e => { 
+        if (e.target.id !== "insInput") insSugBox.style.display = "none"; 
+        if (e.target.id !== "nameInput") nameSugBox.style.display = "none"; 
+    });
+
+    insInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            const firstSuggestion = insSugBox.querySelector(".suggestion-item");
+            if (firstSuggestion && !firstSuggestion.innerText.includes("Không tìm thấy")) {
+                firstSuggestion.click();
+            } else {
+                performSearch(this.value);
+            }
+        }
+    });
+
+    nameInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            const firstSuggestion = nameSugBox.querySelector(".suggestion-item");
+            if (firstSuggestion && !firstSuggestion.innerText.includes("Không tìm thấy")) {
+                firstSuggestion.click();
+            }
+        }
+    });
+
+    // --- HÀM XỬ LÝ MODAL GMP MỚI TÍCH HỢP MÔ TẢ PHỤ LỤC 4 ---
     function showGMPModal() {
         const tbody = document.getElementById("gmpModalBody");
         if (db.pl3_categories.length === 0) {
             tbody.innerHTML = "<tr><td colspan='2'>Không tìm thấy dữ liệu đối tượng thực phẩm GMP trong file Excel.</td></tr>";
         } else {
-            tbody.innerHTML = db.pl3_categories.map(c => `<tr><td><strong>${c.maNhom}</strong></td><td>${c.tenNhom}</td></tr>`).join("");
+            tbody.innerHTML = db.pl3_categories.map(c => {
+                // Áp dụng logic tra cứu mô tả từ Phụ lục 4 giống hệt như bảng PL2
+                let pl4Data = db.pl4[c.maNhom];
+                let tenNhomChuan = pl4Data ? pl4Data.ten : c.tenNhom;
+                let moTaHTML = (pl4Data && pl4Data.moTa) ? `<div class="desc-text"><strong>Mô tả nhóm:</strong> ${pl4Data.moTa}</div>` : "";
+
+                return `
+                    <tr>
+                        <td><strong>${c.maNhom}</strong></td>
+                        <td>
+                            <strong>${tenNhomChuan}</strong>
+                            ${moTaHTML}
+                        </td>
+                    </tr>`;
+            }).join("");
         }
         document.getElementById("gmpModal").style.display = "block";
     }
@@ -321,11 +414,12 @@
         }
     }
 
-    function executeSearch() {
-        const input = cleanIns(document.getElementById("insInput").value.trim().toUpperCase());
+    function performSearch(inputIns) {
+        const input = cleanIns(inputIns.toUpperCase());
         if (!input) return;
 
-        sugBox.style.display = "none";
+        insSugBox.style.display = "none";
+        nameSugBox.style.display = "none";
         document.getElementById("info-section").style.display = 'none';
         document.getElementById("usage-section").style.display = 'none';
         document.getElementById("gmpStatus").innerHTML = "";
@@ -364,7 +458,6 @@
         });
 
         if (foundInfo) {
-            // Đẩy trạng thái GMP lên Header
             let gmpBadgeHTML = isAnyGMP 
                 ? `<span class="gmp-badge clickable" onclick="showGMPModal()" title="Click để xem danh sách">✔ Chuẩn GMP (Click xem đối tượng TP)</span>` 
                 : `<span class="gmp-badge not-gmp">✖ Không thuộc GMP</span>`;
@@ -422,16 +515,6 @@
             document.getElementById("usage-section").style.display = "block";
         }
     }
-
-    inputEl.addEventListener("keypress", function(e) {
-        if (e.key === "Enter") {
-            const firstSuggestion = document.querySelector(".suggestion-item strong");
-            if (firstSuggestion && cleanIns(this.value.toUpperCase()) !== cleanIns(firstSuggestion.innerText.toUpperCase())) {
-                this.value = firstSuggestion.innerText;
-            }
-            executeSearch();
-        }
-    });
 </script>
 </body>
 </html>
