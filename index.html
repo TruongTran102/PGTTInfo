@@ -16,16 +16,16 @@
         .login-box { background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); text-align: center; max-width: 420px; width: 90%; position: relative;}
         .login-box h2 { margin-top: 0; color: var(--primary); }
         .login-box p { color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
-        .input-group { text-align: left; margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 13px; font-weight: bold; color: var(--primary); margin-bottom: 5px; }
-        .login-box input { width: 100%; padding: 12px 15px; border: 2px solid #bdc3c7; border-radius: 6px; font-size: 15px; outline: none; box-sizing: border-box; font-weight: bold; transition: 0.3s;}
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; font-weight: bold; color: var(--primary); margin-bottom: 8px; }
+        .login-box input { width: 100%; padding: 14px 15px; border: 2px solid #bdc3c7; border-radius: 6px; font-size: 15px; outline: none; box-sizing: border-box; font-weight: bold; transition: 0.3s;}
         .login-box input:focus { border-color: var(--secondary); box-shadow: 0 0 5px rgba(211, 84, 0, 0.2);}
         .login-box input:disabled { background-color: #ecf0f1; cursor: not-allowed; color: #95a5a6; }
         .login-box button { background: var(--secondary); color: white; border: none; padding: 15px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.2s;}
         .login-box button:hover:not(:disabled) { background: #e67e22; transform: translateY(-2px);}
         .login-box button:disabled { background: #95a5a6; cursor: not-allowed; transform: none;}
         
-        .forgot-link { display: block; text-align: right; margin-top: 5px; font-size: 13px; color: #3498db; cursor: pointer; text-decoration: underline; font-weight: bold;}
+        .forgot-link { display: block; text-align: right; margin-top: 8px; font-size: 13px; color: #3498db; cursor: pointer; text-decoration: underline; font-weight: bold;}
         .forgot-link:hover { color: #2980b9; }
         #loginError { color: #e74c3c; font-weight: bold; margin: 10px 0; min-height: 20px; font-size: 14px;}
         
@@ -40,7 +40,7 @@
         #reportList { list-style: none; margin: 0; padding: 0; color: #d35400; font-weight: bold; font-size: 15px; }
         .success-report { background: #e8f8f5 !important; border: 2px solid #1abc9c !important; text-align: left !important;}
 
-        /* Box Tìm kiếm & Gợi ý */
+        /* Box Tìm kiếm */
         .search-container { margin-bottom: 30px; display: none; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e1e8ed;}
         .search-box-wrapper { position: relative; margin-bottom: 15px; }
         .search-box-wrapper:last-child { margin-bottom: 0; }
@@ -64,7 +64,6 @@
         .gmp-badge.clickable { cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.2); border: 1px solid #fff; }
         .gmp-badge.clickable:hover { background-color: #219a52; transform: scale(1.02); }
         .not-gmp { background-color: #e74c3c; cursor: default; }
-        .not-gmp:hover { background-color: #e74c3c; transform: none; }
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 15px; }
         th, td { padding: 15px; text-align: left; border: 1px solid #ddd; vertical-align: top; }
@@ -72,15 +71,16 @@
         tr:nth-child(even) { background-color: #fafbfc; }
         tr:hover { background-color: #fdf2e9; }
         
-        .desc-text { font-size: 14px; color: #555; margin-top: 8px; display: block; line-height: 1.5; background: #fdfefe; padding: 10px; border-left: 4px solid #3498db; border-radius: 4px;}
-        .note-text { font-size: 14px; color: #d35400; background: #fef5e7; padding: 10px; border-radius: 4px; display: block; margin-top: 8px; border-left: 4px solid #e67e22; line-height: 1.5;}
-        .shared-group-text { font-size: 14px; color: #117864; background: #e8f8f5; padding: 10px; border-radius: 4px; margin-top: 8px; border-left: 4px solid #1abc9c; line-height: 1.5;}
+        .desc-text, .note-text, .shared-group-text { font-size: 14px; padding: 10px; border-radius: 4px; display: block; margin-top: 8px; line-height: 1.5;}
+        .desc-text { color: #555; background: #fdfefe; border-left: 4px solid #3498db;}
+        .note-text { color: #d35400; background: #fef5e7; border-left: 4px solid #e67e22;}
+        .shared-group-text { color: #117864; background: #e8f8f5; border-left: 4px solid #1abc9c;}
 
         /* MODAL */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(2px); }
         .modal-content { background-color: #fff; margin: 3% auto; padding: 25px; border-radius: 10px; width: 85%; max-width: 900px; max-height: 85vh; overflow-y: auto; box-shadow: 0 5px 20px rgba(0,0,0,0.3); animation: slideDown 0.3s; }
         @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; line-height: 1; }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
         .close-btn:hover { color: #e74c3c; }
         .modal-title { color: var(--primary); margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         .gmp-table-container { max-height: 60vh; overflow-y: auto; border: 1px solid #ddd; border-radius: 5px;}
@@ -89,14 +89,13 @@
 </head>
 <body>
 
-<!-- MÀN HÌNH ĐĂNG NHẬP (CÓ TÍNH NĂNG BẢO MẬT & KHÓA) -->
+<!-- MÀN HÌNH ĐĂNG NHẬP CHUYÊN NGHIỆP -->
 <div id="loginOverlay">
     <div class="login-box">
         
-        <!-- FORM ĐĂNG NHẬP CHÍNH -->
         <div id="loginForm">
-            <h2>Xác Thực Hệ Thống R&D</h2>
-            <p>Vui lòng khai báo thông tin để truy cập CSDL Thông tư 24</p>
+            <h2>Hệ Thống R&D</h2>
+            <p>Đăng nhập để tra cứu CSDL Thông tư 24</p>
             
             <div class="input-group">
                 <label>Tên đăng nhập / Mã NV:</label>
@@ -107,16 +106,11 @@
                 <input type="password" id="pwdInput" placeholder="Nhập mật khẩu..." autocomplete="off">
                 <span class="forgot-link" onclick="toggleForgotForm(true)">Quên mật khẩu?</span>
             </div>
-            <div class="input-group">
-                <label>Tên thiết bị truy cập:</label>
-                <input type="text" id="deviceInput" placeholder="VD: Laptop Công ty, iPhone..." autocomplete="off">
-            </div>
 
             <div id="loginError"></div>
             <button id="loginBtn" onclick="verifyAccess()">Truy Cập Hệ Thống</button>
         </div>
 
-        <!-- FORM KHÔI PHỤC MẬT KHẨU (Ẩn mặc định) -->
         <div id="forgotForm">
             <h2>Khôi Phục Mật Khẩu</h2>
             <p>Nhập Tên đăng nhập và Email nội bộ của bạn. Hệ thống sẽ cấp lại mật khẩu ngẫu nhiên.</p>
@@ -140,83 +134,36 @@
 
 <div class="container">
     <h1>HỆ THỐNG TRA CỨU PHỤ GIA THỰC PHẨM</h1>
-
     <div id="reportPanel">
         <h4 id="reportTitle">Đang khởi động hệ thống...</h4>
-        <ul id="reportList">
-            <li>⏳ Đang tải dữ liệu, vui lòng chờ trong giây lát...</li>
-        </ul>
+        <ul id="reportList"><li>⏳ Đang tải dữ liệu, vui lòng chờ trong giây lát...</li></ul>
     </div>
 
+    <!-- KHU VỰC KẾT QUẢ VÀ TRA CỨU NHƯ CŨ (Lược bớt cho gọn, phần JS dưới đảm nhiệm hiển thị) -->
     <div class="search-container" id="searchContainer">
         <h3 style="color: var(--primary); margin-top: 0; margin-bottom: 15px;">Bắt đầu tra cứu</h3>
-        <div class="search-box-wrapper">
-            <div class="search-box">
-                <input type="text" id="insInput" placeholder="🔍 Tra cứu theo mã INS (VD: Gõ '101' để xem 101(i), 101(ii)...)" autocomplete="off">
-            </div>
-            <div id="insSuggestions" class="suggestions-box"></div>
-        </div>
-
-        <div class="search-box-wrapper">
-            <div class="search-box">
-                <input type="text" id="nameInput" placeholder="🔍 Tra cứu theo Tên phụ gia (Tiếng Việt hoặc Tiếng Anh)..." autocomplete="off">
-            </div>
-            <div id="nameSuggestions" class="suggestions-box"></div>
-        </div>
+        <div class="search-box-wrapper"><div class="search-box"><input type="text" id="insInput" placeholder="🔍 Tra cứu theo mã INS..." autocomplete="off"></div><div id="insSuggestions" class="suggestions-box"></div></div>
+        <div class="search-box-wrapper"><div class="search-box"><input type="text" id="nameInput" placeholder="🔍 Tra cứu theo Tên phụ gia..." autocomplete="off"></div><div id="nameSuggestions" class="suggestions-box"></div></div>
     </div>
-
-    <div id="info-section" class="result-card">
-        <h3 class="card-header">
-            <span>Thông tin Cơ bản (Trích từ Phụ lục 1)</span>
-            <span id="gmpStatus"></span>
-        </h3>
-        <table id="info-table">
-            <thead><tr><th width="15%">Mã INS</th><th width="25%">Tên Tiếng Việt</th><th width="25%">Tên Tiếng Anh</th><th width="35%">Chức năng</th></tr></thead>
-            <tbody id="info-body"></tbody>
-        </table>
-    </div>
-
-    <div id="usage-section" class="result-card">
-        <h3 class="card-header">Mức sử dụng & Nhóm thực phẩm (Trích từ Phụ lục 2A, 2B, 4 & Ghi chú)</h3>
-        <table id="usage-table">
-            <thead><tr><th width="10%">Mã Nhóm</th><th width="35%">Nhóm thực phẩm & Mô tả chi tiết</th><th width="15%">Giới hạn ML (mg/kg)</th><th width="40%">Ghi chú & Giải thích chi tiết</th></tr></thead>
-            <tbody id="usage-body"></tbody>
-        </table>
-    </div>
+    
+    <div id="info-section" class="result-card"><h3 class="card-header"><span>Thông tin Cơ bản</span><span id="gmpStatus"></span></h3><table id="info-table"><thead><tr><th width="15%">Mã INS</th><th width="25%">Tên Tiếng Việt</th><th width="25%">Tên Tiếng Anh</th><th width="35%">Chức năng</th></tr></thead><tbody id="info-body"></tbody></table></div>
+    <div id="usage-section" class="result-card"><h3 class="card-header">Mức sử dụng & Nhóm thực phẩm</h3><table id="usage-table"><thead><tr><th width="10%">Mã Nhóm</th><th width="35%">Nhóm thực phẩm & Mô tả chi tiết</th><th width="15%">Giới hạn ML (mg/kg)</th><th width="40%">Ghi chú & Giải thích chi tiết</th></tr></thead><tbody id="usage-body"></tbody></table></div>
 </div>
-
-<div id="gmpModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeGMPModal()">&times;</span>
-        <h3 class="modal-title">Đối tượng thực phẩm sử dụng theo GMP (Phụ lục 3)</h3>
-        <p style="color: #27ae60; font-weight: bold; margin-bottom: 15px;">Phụ gia này được phép sử dụng cho các nhóm thực phẩm dưới đây theo định mức Thực hành sản xuất tốt (GMP):</p>
-        <div class="gmp-table-container">
-            <table class="gmp-table" id="gmpTable">
-                <thead><tr><th width="15%">Mã Nhóm</th><th>Nhóm thực phẩm & Mô tả chi tiết</th></tr></thead>
-                <tbody id="gmpModalBody"></tbody>
-            </table>
-        </div>
-    </div>
-</div>
+<div id="gmpModal" class="modal"><div class="modal-content"><span class="close-btn" onclick="closeGMPModal()">&times;</span><h3 class="modal-title">Đối tượng thực phẩm sử dụng theo GMP</h3><div class="gmp-table-container"><table class="gmp-table" id="gmpTable"><thead><tr><th width="15%">Mã Nhóm</th><th>Nhóm thực phẩm & Mô tả chi tiết</th></tr></thead><tbody id="gmpModalBody"></tbody></table></div></div></div>
 
 <script>
     // ==========================================
-    // MODULE 1: XÁC THỰC MÁY CHỦ VÀ QUÊN MẬT KHẨU
+    // MODULE 1: XÁC THỰC MÁY CHỦ (BỎ THIẾT BỊ, THÊM HỌ VÀ TÊN)
     // ==========================================
     
-    // ĐIỀN URL GOOGLE APPS SCRIPT MỚI CỦA BẠN VÀO ĐÂY
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKKVDoa9GFI4BRsnXH15kHaQOJqwjdShOexR_hXyNpbuG6j53Klhqa0UMz9VnitIoV_g/exec";
 
     const MAX_FAILS = 5;
     const LOCK_MINUTES = 5;
     let lockTimer;
 
-    // Tự động điền Tên thiết bị nếu đã từng đăng nhập
-    document.getElementById('deviceInput').value = localStorage.getItem('savedDeviceName') || "";
-
     checkLockStatus();
 
-    // -- CHUYỂN ĐỔI FORM ĐĂNG NHẬP / QUÊN MẬT KHẨU --
     function toggleForgotForm(showForgot) {
         if (showForgot) {
             document.getElementById('loginForm').style.display = 'none';
@@ -228,7 +175,6 @@
         }
     }
 
-    // -- HÀM XỬ LÝ YÊU CẦU QUÊN MẬT KHẨU --
     function requestNewPassword() {
         const user = document.getElementById("forgotUsername").value.trim().toLowerCase();
         const email = document.getElementById("forgotEmail").value.trim();
@@ -241,32 +187,27 @@
             return;
         }
 
-        btn.innerText = "Đang gửi email xử lý...";
+        btn.innerText = "Đang xử lý...";
         btn.disabled = true;
         errorMsg.innerText = "";
 
-        const forgotUrl = `${GOOGLE_SCRIPT_URL}?type=forgot&user=${encodeURIComponent(user)}&email=${encodeURIComponent(email)}`;
-
-        fetch(forgotUrl)
+        fetch(`${GOOGLE_SCRIPT_URL}?type=forgot&user=${encodeURIComponent(user)}&email=${encodeURIComponent(email)}`)
             .then(res => res.json())
             .then(response => {
                 btn.innerText = "Gửi Mật Khẩu Mới";
                 btn.disabled = false;
-
                 if (response.status === true) {
-                    errorMsg.style.color = "#27ae60"; // Màu xanh lá báo thành công
+                    errorMsg.style.color = "#27ae60"; 
                     errorMsg.innerText = response.message;
-                    setTimeout(() => { toggleForgotForm(false); }, 3000); // Chờ 3s quay lại đăng nhập
+                    setTimeout(() => { toggleForgotForm(false); }, 3000); 
                 } else {
-                    errorMsg.style.color = "#e74c3c"; // Màu đỏ báo lỗi
+                    errorMsg.style.color = "#e74c3c"; 
                     errorMsg.innerText = response.message;
                 }
             })
             .catch(err => {
-                btn.innerText = "Gửi Mật Khẩu Mới";
-                btn.disabled = false;
-                errorMsg.style.color = "#e74c3c";
-                errorMsg.innerText = "Lỗi kết nối máy chủ! Vui lòng thử lại sau.";
+                btn.innerText = "Gửi Mật Khẩu Mới"; btn.disabled = false;
+                errorMsg.style.color = "#e74c3c"; errorMsg.innerText = "Lỗi kết nối máy chủ!";
             });
     }
 
@@ -282,7 +223,6 @@
     function lockInterface(lockUntil) {
         document.getElementById("usernameInput").disabled = true;
         document.getElementById("pwdInput").disabled = true;
-        document.getElementById("deviceInput").disabled = true;
         document.getElementById("loginBtn").disabled = true;
         
         lockTimer = setInterval(() => {
@@ -293,14 +233,13 @@
                 localStorage.removeItem("lockUntil");
                 document.getElementById("usernameInput").disabled = false;
                 document.getElementById("pwdInput").disabled = false;
-                document.getElementById("deviceInput").disabled = false;
                 document.getElementById("loginBtn").disabled = false;
                 document.getElementById("loginError").innerText = "";
                 document.getElementById("loginBtn").innerText = "Truy Cập Hệ Thống";
             } else {
                 let m = Math.floor(timeLeft / 60);
                 let s = timeLeft % 60;
-                document.getElementById("loginError").innerText = `Hệ thống khóa bảo mật. Thử lại sau: ${m} phút ${s < 10 ? '0':''}${s} giây`;
+                document.getElementById("loginError").innerText = `Khóa bảo mật: ${m} phút ${s < 10 ? '0':''}${s} giây`;
             }
         }, 1000);
     }
@@ -310,22 +249,20 @@
 
         const user = document.getElementById("usernameInput").value.trim().toLowerCase();
         const pwd = document.getElementById("pwdInput").value;
-        const device = document.getElementById("deviceInput").value.trim();
         const errorMsg = document.getElementById("loginError");
         const btn = document.getElementById("loginBtn");
 
-        if (!user || !pwd || !device) {
-            errorMsg.innerText = "Vui lòng nhập đầy đủ Tên, Mật khẩu và Thiết bị!";
+        if (!user || !pwd) {
+            errorMsg.innerText = "Vui lòng nhập đầy đủ thông tin!";
             return;
         }
 
-        // Đổi trạng thái hiển thị
-        btn.innerText = "Đang kiểm tra dữ liệu...";
+        btn.innerText = "Đang xác thực...";
         btn.disabled = true;
         errorMsg.innerText = "";
 
-        // Gọi về Google Sheets để xin xác thực
-        const checkUrl = `${GOOGLE_SCRIPT_URL}?type=login&user=${encodeURIComponent(user)}&pwd=${encodeURIComponent(pwd)}&device=${encodeURIComponent(device)}`;
+        // Link không còn gửi biến device nữa
+        const checkUrl = `${GOOGLE_SCRIPT_URL}?type=login&user=${encodeURIComponent(user)}&pwd=${encodeURIComponent(pwd)}`;
 
         fetch(checkUrl)
             .then(res => res.json())
@@ -334,42 +271,37 @@
                 btn.disabled = false;
 
                 if (response.status === true) {
-                    // MẬT KHẨU VÀ THIẾT BỊ HỢP LỆ
                     document.getElementById("loginOverlay").style.display = "none";
                     localStorage.removeItem("failCount");
-                    localStorage.setItem('savedDeviceName', device); 
                     
-                    // Ghi Log thành công
-                    sendLogData("Đăng nhập Thành Công", user, device);
+                    // Ghi Log thành công cùng với Họ Tên lấy từ máy chủ
+                    sendLogData("Đăng nhập Thành Công", user, response.fullName);
                     
-                    // Kích hoạt việc tải Excel
                     loadExcelData();
                 } else {
-                    // MẬT KHẨU HOẶC THIẾT BỊ SAI
                     let fails = parseInt(localStorage.getItem("failCount") || "0") + 1;
                     localStorage.setItem("failCount", fails);
                     
-                    sendLogData(`Đăng nhập Thất Bại: ${response.message}`, user, device);
+                    sendLogData(`Đăng nhập Thất Bại: ${response.message}`, user, "Khách");
 
                     if (fails >= MAX_FAILS) {
                         const unlockTime = Date.now() + (LOCK_MINUTES * 60 * 1000);
                         localStorage.setItem("lockUntil", unlockTime);
                         lockInterface(unlockTime);
                     } else {
-                        errorMsg.innerText = `${response.message} (Còn ${MAX_FAILS - fails} lần thử)`;
+                        errorMsg.innerText = `${response.message} (Còn ${MAX_FAILS - fails} lần)`;
                         document.getElementById("pwdInput").value = "";
                         document.getElementById("pwdInput").focus();
                     }
                 }
             })
             .catch(err => {
-                btn.innerText = "Truy Cập Hệ Thống";
-                btn.disabled = false;
-                errorMsg.innerText = "Lỗi kết nối máy chủ xác thực. Kiểm tra lại Internet!";
+                btn.innerText = "Truy Cập Hệ Thống"; btn.disabled = false;
+                errorMsg.innerText = "Lỗi kết nối máy chủ!";
             });
     }
 
-    function sendLogData(actionName, userName, deviceName) {
+    function sendLogData(actionName, userName, fullName) {
         if (!GOOGLE_SCRIPT_URL.includes("script.google.com")) return;
 
         fetch('https://ipapi.co/json/')
@@ -379,25 +311,23 @@
                 const location = `${data.city || ''}, ${data.region || ''}`;
                 const techDevice = navigator.userAgent;
                 
-                const trackingUrl = `${GOOGLE_SCRIPT_URL}?type=log&user=${encodeURIComponent(userName)}&deviceName=${encodeURIComponent(deviceName)}&ip=${encodeURIComponent(ip)}&location=${encodeURIComponent(location)}&device=${encodeURIComponent(techDevice)}&action=${encodeURIComponent(actionName)}`;
+                // Đẩy thông tin Họ và tên lên Log
+                const trackingUrl = `${GOOGLE_SCRIPT_URL}?type=log&user=${encodeURIComponent(userName)}&fullName=${encodeURIComponent(fullName)}&ip=${encodeURIComponent(ip)}&location=${encodeURIComponent(location)}&device=${encodeURIComponent(techDevice)}&action=${encodeURIComponent(actionName)}`;
                 fetch(trackingUrl, { mode: 'no-cors' }).catch(err => {});
             })
             .catch(error => {
                 const techDevice = navigator.userAgent;
-                const trackingUrl = `${GOOGLE_SCRIPT_URL}?type=log&user=${encodeURIComponent(userName)}&deviceName=${encodeURIComponent(deviceName)}&ip=Lỗi_Mạng&location=Lỗi_Mạng&device=${encodeURIComponent(techDevice)}&action=${encodeURIComponent(actionName)}`;
+                const trackingUrl = `${GOOGLE_SCRIPT_URL}?type=log&user=${encodeURIComponent(userName)}&fullName=${encodeURIComponent(fullName)}&ip=Lỗi_Mạng&location=Lỗi_Mạng&device=${encodeURIComponent(techDevice)}&action=${encodeURIComponent(actionName)}`;
                 fetch(trackingUrl, { mode: 'no-cors' }).catch(e => {});
             });
     }
 
     document.getElementById("pwdInput").addEventListener("keypress", function(e) { if (e.key === "Enter") verifyAccess(); });
-    document.getElementById("deviceInput").addEventListener("keypress", function(e) { if (e.key === "Enter") verifyAccess(); });
     document.getElementById("usernameInput").addEventListener("keypress", function(e) { if (e.key === "Enter") document.getElementById("pwdInput").focus(); });
     document.getElementById("forgotEmail").addEventListener("keypress", function(e) { if (e.key === "Enter") requestNewPassword(); });
 
-
     // ==========================================
-    // MODULE 2: TẢI & TRÍCH XUẤT CƠ SỞ DỮ LIỆU
-    // (Chỉ chạy hàm này SAU KHI đăng nhập thành công)
+    // MODULE 2 & 3: TẢI EXCEL VÀ HIỂN THỊ DỮ LIỆU
     // ==========================================
     let db = { pl1: [], pl2: [], pl3: new Set(), pl3_categories: [], pl4: {}, ghiChu: {} };
     const cleanIns = (str) => String(str).replace(/\s+/g, '');
@@ -421,27 +351,20 @@
                     workbook.SheetNames.forEach(sheetName => {
                         const rawData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {header: 1});
                         if(rawData.length === 0) return;
-
                         const sName = sheetName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '');
 
                         if (sName.includes("phuluc1")) {
                             rawData.forEach(row => {
                                 let ins = cleanIns(row[1] || row[0] || "");
                                 if (/^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(ins)) {
-                                    let tv = String(row[2] || row[1] || "").trim();
-                                    let ta = String(row[3] || row[2] || "").trim();
-                                    let func = String(row[4] || row[3] || "").trim();
-                                    if (tv.toLowerCase() !== "tiếng việt" && !db.pl1.find(x => x.ins === ins)) {
-                                        db.pl1.push({ ins, tv, ta, chucNang: func });
-                                    }
+                                    let tv = String(row[2] || row[1] || "").trim(); let ta = String(row[3] || row[2] || "").trim(); let func = String(row[4] || row[3] || "").trim();
+                                    if (tv.toLowerCase() !== "tiếng việt" && !db.pl1.find(x => x.ins === ins)) db.pl1.push({ ins, tv, ta, chucNang: func });
                                 }
                             });
                         }
                         else if (sName.includes("phuluc3")) {
                             rawData.forEach(row => {
-                                let col0 = String(row[0] || "").trim();
-                                let col1 = String(row[1] || "").trim();
-                                let ins = cleanIns(col1 || col0);
+                                let col0 = String(row[0] || "").trim(); let col1 = String(row[1] || "").trim(); let ins = cleanIns(col1 || col0);
                                 if (/^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(ins) && !col0.includes(".")) db.pl3.add(ins);
                                 if (/^\d{2}\.\d/.test(col0)) db.pl3_categories.push({ maNhom: col0, tenNhom: col1 });
                             });
@@ -454,34 +377,21 @@
                         }
                         else if (sName.includes("ghichu") || sName.includes("giaithich")) {
                             rawData.forEach(row => {
-                                let so = String(row[0] || "").trim();
-                                let desc = String(row[1] || "").trim();
+                                let so = String(row[0] || "").trim(); let desc = String(row[1] || "").trim();
                                 if (so && desc && so.toLowerCase() !== "số ghi chú" && !so.includes("Unnamed")) db.ghiChu[so] = desc;
                             });
                         }
                         else if (sName.includes("2a") || sName.includes("2b")) {
-                            let currentINSList = [];
-                            let hasDataSinceLastINS = false;
-                            let isPL2B = sName.includes("2b");
-
+                            let currentINSList = []; let hasDataSinceLastINS = false; let isPL2B = sName.includes("2b");
                             rawData.forEach(row => {
                                 let col0 = String(row[0] || "").trim(), col1 = String(row[1] || "").trim(), col2 = String(row[2] || "").trim(), col3 = String(row[3] || "").trim();
                                 let cleanC0 = cleanIns(col0), cleanC1 = cleanIns(col1);
                                 let possibleIns = /^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(cleanC0) ? cleanC0 : (/^[1-9]\d{2,3}[a-zA-Z\(\)]*$/.test(cleanC1) ? cleanC1 : "");
                                 let isML = (v) => /^\d+([.,]\d+)?$/.test(v) || v.toUpperCase() === 'GMP';
                                 let isDataRow = false; let maNhom = "", tenNhom = "", ml = "", ghiChu = "";
-
-                                if (isPL2B) {
-                                    if (isML(col2)) { isDataRow = true; maNhom = "Thuộc 2B"; tenNhom = col0; ml = col2; ghiChu = col3; }
-                                } else {
-                                    if (/^\d{2}\.\d/.test(col0) && isML(col2)) { isDataRow = true; maNhom = col0; tenNhom = col1; ml = col2; ghiChu = col3; }
-                                }
-
-                                if (possibleIns) {
-                                    if (hasDataSinceLastINS) { currentINSList = []; hasDataSinceLastINS = false; }
-                                    if (!currentINSList.includes(possibleIns)) currentINSList.push(possibleIns);
-                                }
-
+                                if (isPL2B) { if (isML(col2)) { isDataRow = true; maNhom = "Thuộc 2B"; tenNhom = col0; ml = col2; ghiChu = col3; } } 
+                                else { if (/^\d{2}\.\d/.test(col0) && isML(col2)) { isDataRow = true; maNhom = col0; tenNhom = col1; ml = col2; ghiChu = col3; } }
+                                if (possibleIns) { if (hasDataSinceLastINS) { currentINSList = []; hasDataSinceLastINS = false; } if (!currentINSList.includes(possibleIns)) currentINSList.push(possibleIns); }
                                 if (isDataRow) {
                                     hasDataSinceLastINS = true; let sharedGroup = [...currentINSList];
                                     currentINSList.forEach(ins => db.pl2.push({ ins, maNhom, tenNhom, ml, ghiChu, sharedGroup }));
@@ -489,49 +399,31 @@
                             });
                         }
                     });
-
                     if (db.pl1.length > 0) {
-                        reportPanel.className = "success-report";
-                        reportTitle.innerHTML = "✅ Tải dữ liệu thành công!";
-                        reportTitle.style.color = "#117864";
-                        reportList.style.color = "#148f77";
-                        reportList.innerHTML = `<li>📌 Nạp ${db.pl1.length} mã phụ gia và ${db.pl2.length} giới hạn ML.</li><li>📌 Nhận diện ${db.pl3.size} mã đạt chuẩn GMP và <strong>${db.pl3_categories.length} nhóm đối tượng thực phẩm GMP</strong>.</li>`;
-                        setTimeout(() => { reportPanel.style.display = 'none'; }, 4000);
-                        document.getElementById('searchContainer').style.display = 'block';
+                        reportPanel.className = "success-report"; reportTitle.innerHTML = "✅ Tải dữ liệu thành công!"; reportTitle.style.color = "#117864"; reportList.style.color = "#148f77";
+                        reportList.innerHTML = `<li>📌 Nạp ${db.pl1.length} mã phụ gia và ${db.pl2.length} giới hạn ML.</li><li>📌 Nhận diện ${db.pl3.size} mã đạt chuẩn GMP và <strong>${db.pl3_categories.length} nhóm đối tượng TP</strong>.</li>`;
+                        setTimeout(() => { reportPanel.style.display = 'none'; }, 4000); document.getElementById('searchContainer').style.display = 'block';
                     } else throw new Error("Cấu trúc Sheet không đúng quy định.");
-                } catch (error) {
-                    reportTitle.innerHTML = "⚠️ LỖI XỬ LÝ DỮ LIỆU"; reportTitle.style.color = "red"; reportList.innerHTML = `<li style='color:red;'>${error.message}</li>`;
-                }
-            }).catch(error => {
-                reportTitle.innerHTML = "⚠️ LỖI KẾT NỐI EXCEL"; reportTitle.style.color = "red"; reportList.innerHTML = `<li style='color:red;'>Không đọc được file Excel (${error.message})</li>`;
-            });
+                } catch (error) { reportTitle.innerHTML = "⚠️ LỖI XỬ LÝ DỮ LIỆU"; reportTitle.style.color = "red"; reportList.innerHTML = `<li style='color:red;'>${error.message}</li>`; }
+            }).catch(error => { reportTitle.innerHTML = "⚠️ LỖI KẾT NỐI EXCEL"; reportTitle.style.color = "red"; reportList.innerHTML = `<li style='color:red;'>Không đọc được file (${error.message})</li>`; });
     }
 
-    // ==========================================
-    // MODULE 3: TÌM KIẾM & HIỂN THỊ DỮ LIỆU
-    // ==========================================
     const insInput = document.getElementById("insInput"), insSugBox = document.getElementById("insSuggestions");
     const nameInput = document.getElementById("nameInput"), nameSugBox = document.getElementById("nameSuggestions");
-
     insInput.addEventListener("input", function() {
-        const val = cleanIns(this.value.trim().toUpperCase());
-        insSugBox.innerHTML = "";
+        const val = cleanIns(this.value.trim().toUpperCase()); insSugBox.innerHTML = "";
         if (!val) { insSugBox.style.display = "none"; return; }
         const matches = db.pl1.filter(item => item.ins.toUpperCase().includes(val));
         if (matches.length > 0) {
             insSugBox.style.display = "block";
             matches.slice(0, 15).forEach(match => { 
-                const div = document.createElement("div"); div.className = "suggestion-item";
-                div.innerHTML = `<span class="ins-label">${match.ins}</span> <strong>${match.tv || match.ta || 'Chưa có tên'}</strong>`;
-                div.onclick = function() { insInput.value = match.ins; nameInput.value = match.tv || match.ta || ""; insSugBox.style.display = "none"; performSearch(match.ins); };
-                insSugBox.appendChild(div);
+                const div = document.createElement("div"); div.className = "suggestion-item"; div.innerHTML = `<span class="ins-label">${match.ins}</span> <strong>${match.tv || match.ta || 'Chưa có tên'}</strong>`;
+                div.onclick = function() { insInput.value = match.ins; nameInput.value = match.tv || match.ta || ""; insSugBox.style.display = "none"; performSearch(match.ins); }; insSugBox.appendChild(div);
             });
         } else { insSugBox.style.display = "block"; insSugBox.innerHTML = `<div class="suggestion-item" style="color:red; justify-content:center;">Không tìm thấy mã INS chứa "${val}"</div>`; }
     });
-
     nameInput.addEventListener("input", function() {
-        const val = this.value.trim().toLowerCase();
-        nameSugBox.innerHTML = "";
+        const val = this.value.trim().toLowerCase(); nameSugBox.innerHTML = "";
         if (!val) { nameSugBox.style.display = "none"; return; }
         const matches = db.pl1.filter(item => (item.tv && item.tv.toLowerCase().includes(val)) || (item.ta && item.ta.toLowerCase().includes(val)));
         if (matches.length > 0) {
@@ -540,68 +432,43 @@
                 const div = document.createElement("div"); div.className = "suggestion-item";
                 let displayName = match.tv ? match.tv : match.ta, otherName = match.tv && match.ta ? `(${match.ta})` : "";
                 div.innerHTML = `<span class="ins-label">${match.ins}</span> <strong>${displayName}</strong> <span style="color:#7f8c8d; margin-left:5px;">${otherName}</span>`;
-                div.onclick = function() { nameInput.value = displayName; insInput.value = match.ins; nameSugBox.style.display = "none"; performSearch(match.ins); };
-                nameSugBox.appendChild(div);
+                div.onclick = function() { nameInput.value = displayName; insInput.value = match.ins; nameSugBox.style.display = "none"; performSearch(match.ins); }; nameSugBox.appendChild(div);
             });
         } else { nameSugBox.style.display = "block"; nameSugBox.innerHTML = `<div class="suggestion-item" style="color:red; justify-content:center;">Không tìm thấy tên phụ gia chứa "${val}"</div>`; }
     });
-
     document.addEventListener("click", e => { if (e.target.id !== "insInput") insSugBox.style.display = "none"; if (e.target.id !== "nameInput") nameSugBox.style.display = "none"; });
-    insInput.addEventListener("keypress", function(e) { if (e.key === "Enter") { const firstSuggestion = insSugBox.querySelector(".suggestion-item"); if (firstSuggestion && !firstSuggestion.innerText.includes("Không tìm thấy")) firstSuggestion.click(); else performSearch(this.value); } });
-    nameInput.addEventListener("keypress", function(e) { if (e.key === "Enter") { const firstSuggestion = nameSugBox.querySelector(".suggestion-item"); if (firstSuggestion && !firstSuggestion.innerText.includes("Không tìm thấy")) firstSuggestion.click(); } });
+    insInput.addEventListener("keypress", function(e) { if (e.key === "Enter") { const f = insSugBox.querySelector(".suggestion-item"); if (f && !f.innerText.includes("Không tìm thấy")) f.click(); else performSearch(this.value); } });
+    nameInput.addEventListener("keypress", function(e) { if (e.key === "Enter") { const f = nameSugBox.querySelector(".suggestion-item"); if (f && !f.innerText.includes("Không tìm thấy")) f.click(); } });
 
     function showGMPModal() {
         const tbody = document.getElementById("gmpModalBody");
-        if (db.pl3_categories.length === 0) tbody.innerHTML = "<tr><td colspan='2'>Không tìm thấy dữ liệu đối tượng thực phẩm GMP trong file Excel.</td></tr>";
-        else {
-            tbody.innerHTML = db.pl3_categories.map(c => {
-                let pl4Data = db.pl4[c.maNhom]; let tenNhomChuan = pl4Data ? pl4Data.ten : c.tenNhom;
-                let moTaHTML = (pl4Data && pl4Data.moTa) ? `<div class="desc-text"><strong>Mô tả nhóm:</strong> ${pl4Data.moTa}</div>` : "";
-                return `<tr><td><strong>${c.maNhom}</strong></td><td><strong>${tenNhomChuan}</strong>${moTaHTML}</td></tr>`;
-            }).join("");
-        }
+        if (db.pl3_categories.length === 0) tbody.innerHTML = "<tr><td colspan='2'>Không tìm thấy dữ liệu đối tượng thực phẩm GMP.</td></tr>";
+        else { tbody.innerHTML = db.pl3_categories.map(c => { let pl4Data = db.pl4[c.maNhom]; return `<tr><td><strong>${c.maNhom}</strong></td><td><strong>${pl4Data ? pl4Data.ten : c.tenNhom}</strong>${pl4Data && pl4Data.moTa ? `<div class="desc-text"><strong>Mô tả:</strong> ${pl4Data.moTa}</div>` : ""}</td></tr>`; }).join(""); }
         document.getElementById("gmpModal").style.display = "block";
     }
     function closeGMPModal() { document.getElementById("gmpModal").style.display = "none"; }
     window.onclick = function(event) { if (event.target === document.getElementById("gmpModal")) closeGMPModal(); }
 
     function performSearch(inputIns) {
-        const input = cleanIns(inputIns.toUpperCase());
-        if (!input) return;
+        const input = cleanIns(inputIns.toUpperCase()); if (!input) return;
         insSugBox.style.display = "none"; nameSugBox.style.display = "none"; document.getElementById("info-section").style.display = 'none'; document.getElementById("usage-section").style.display = 'none'; document.getElementById("gmpStatus").innerHTML = "";
-
         let targetGroup = new Set(); targetGroup.add(input); 
         const matchedPL2 = db.pl2.filter(item => item.ins.toUpperCase() === input);
         matchedPL2.forEach(item => { if (item.sharedGroup && item.sharedGroup.length > 0) item.sharedGroup.forEach(code => targetGroup.add(code.toUpperCase())); });
         let sortedGroup = Array.from(targetGroup).sort((a, b) => a.localeCompare(b));
-
         let infoHTML = "", foundInfo = false, isAnyGMP = false;
         sortedGroup.forEach(insCodeUpper => {
             const info = db.pl1.find(x => x.ins.toUpperCase() === insCodeUpper);
-            if (info) {
-                foundInfo = true; if (Array.from(db.pl3).some(gmpIns => gmpIns.toUpperCase() === insCodeUpper)) isAnyGMP = true;
-                infoHTML += `<tr><td><strong style="font-size:16px">${info.ins}</strong></td><td>${info.tv || "-"}</td><td>${info.ta || "-"}</td><td>${info.chucNang || "-"}</td></tr>`;
-            }
+            if (info) { foundInfo = true; if (Array.from(db.pl3).some(gmpIns => gmpIns.toUpperCase() === insCodeUpper)) isAnyGMP = true; infoHTML += `<tr><td><strong style="font-size:16px">${info.ins}</strong></td><td>${info.tv || "-"}</td><td>${info.ta || "-"}</td><td>${info.chucNang || "-"}</td></tr>`; }
         });
-
-        if (foundInfo) {
-            document.getElementById("gmpStatus").innerHTML = isAnyGMP ? `<span class="gmp-badge clickable" onclick="showGMPModal()" title="Click để xem danh sách">✔ Chuẩn GMP (Click xem đối tượng TP)</span>` : `<span class="gmp-badge not-gmp">✖ Không thuộc GMP</span>`;
-            document.getElementById("info-body").innerHTML = infoHTML; document.getElementById("info-section").style.display = "block";
-        } else { alert(`Mã INS ${input} không có trong hệ thống! Vui lòng chọn từ danh sách gợi ý.`); return; }
-
+        if (foundInfo) { document.getElementById("gmpStatus").innerHTML = isAnyGMP ? `<span class="gmp-badge clickable" onclick="showGMPModal()">✔ Chuẩn GMP</span>` : `<span class="gmp-badge not-gmp">✖ Không thuộc GMP</span>`; document.getElementById("info-body").innerHTML = infoHTML; document.getElementById("info-section").style.display = "block"; } 
+        else { alert(`Mã INS ${input} không có trong hệ thống!`); return; }
         if (matchedPL2.length > 0) {
             document.getElementById("usage-body").innerHTML = matchedPL2.map(item => {
                 let pl4Data = db.pl4[item.maNhom]; let tenNhomChuan = pl4Data ? pl4Data.ten : item.tenNhom;
-                let moTaHTML = (pl4Data && pl4Data.moTa) ? `<div class="desc-text"><strong>Mô tả nhóm:</strong> ${pl4Data.moTa}</div>` : "";
-                let sharedHTML = "";
-                if (item.sharedGroup && item.sharedGroup.length > 1) {
-                    let allDetails = item.sharedGroup.map(oIns => { let oInfo = db.pl1.find(x => x.ins === oIns); return `<strong>${oIns}</strong> ${oInfo ? '('+(oInfo.tv || oInfo.ta || "")+')' : ''}`; }).join('; ');
-                    sharedHTML = `<div class="shared-group-text"><strong>🔄 Dùng chung mức ML cho nhóm:</strong><br> ${allDetails}</div>`;
-                }
-                let ghiChuChiTiet = "";
-                if (item.ghiChu && item.ghiChu.toLowerCase() !== "nan") {
-                    item.ghiChu.split(/[,&;]/).map(k => k.trim()).forEach(k => { if (k) ghiChuChiTiet += `<div class="note-text"><strong>Ghi chú ${k}:</strong> ${db.ghiChu[k] || db.ghiChu["XS"+k] || "(Chưa có giải thích cho ghi chú này trong CSDL)"}</div>`; });
-                }
+                let moTaHTML = (pl4Data && pl4Data.moTa) ? `<div class="desc-text"><strong>Mô tả:</strong> ${pl4Data.moTa}</div>` : "";
+                let sharedHTML = ""; if (item.sharedGroup && item.sharedGroup.length > 1) { let allDetails = item.sharedGroup.map(oIns => { let oInfo = db.pl1.find(x => x.ins === oIns); return `<strong>${oIns}</strong> ${oInfo ? '('+(oInfo.tv || oInfo.ta || "")+')' : ''}`; }).join('; '); sharedHTML = `<div class="shared-group-text"><strong>🔄 Dùng chung mức ML:</strong><br> ${allDetails}</div>`; }
+                let ghiChuChiTiet = ""; if (item.ghiChu && item.ghiChu.toLowerCase() !== "nan") { item.ghiChu.split(/[,&;]/).map(k => k.trim()).forEach(k => { if (k) ghiChuChiTiet += `<div class="note-text"><strong>Ghi chú ${k}:</strong> ${db.ghiChu[k] || db.ghiChu["XS"+k] || "(Chưa có giải thích)"}</div>`; }); }
                 return `<tr><td><strong style="font-size:15px">${item.maNhom}</strong></td><td><strong>${tenNhomChuan}</strong>${moTaHTML}${sharedHTML}</td><td><strong style="color: #c0392b; font-size:16px">${item.ml}</strong></td><td><strong style="font-size: 15px;">${item.ghiChu && item.ghiChu.toLowerCase() !== "nan" ? item.ghiChu : '-'}</strong>${ghiChuChiTiet}</td></tr>`;
             }).join('');
             document.getElementById("usage-section").style.display = "block";
