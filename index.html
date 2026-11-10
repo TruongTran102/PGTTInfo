@@ -11,9 +11,9 @@
         .container { max-width: 1250px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
         h1 { color: var(--primary); text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 15px; margin-bottom: 25px; }
         
-        /* Màn hình Đăng nhập */
+        /* Màn hình Đăng nhập & Quên Mật Khẩu */
         #loginOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), #34495e); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .login-box { background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); text-align: center; max-width: 420px; width: 90%; }
+        .login-box { background: #fff; padding: 40px; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.4); text-align: center; max-width: 420px; width: 90%; position: relative;}
         .login-box h2 { margin-top: 0; color: var(--primary); }
         .login-box p { color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
         .input-group { text-align: left; margin-bottom: 15px; }
@@ -24,7 +24,15 @@
         .login-box button { background: var(--secondary); color: white; border: none; padding: 15px; font-size: 16px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.2s;}
         .login-box button:hover:not(:disabled) { background: #e67e22; transform: translateY(-2px);}
         .login-box button:disabled { background: #95a5a6; cursor: not-allowed; transform: none;}
+        
+        .forgot-link { display: block; text-align: right; margin-top: 5px; font-size: 13px; color: #3498db; cursor: pointer; text-decoration: underline; font-weight: bold;}
+        .forgot-link:hover { color: #2980b9; }
         #loginError { color: #e74c3c; font-weight: bold; margin: 10px 0; min-height: 20px; font-size: 14px;}
+        
+        /* Hiệu ứng trượt qua form quên mật khẩu */
+        #loginForm, #forgotForm { transition: 0.3s; }
+        #forgotForm { display: none; }
+        .back-link { font-size: 13px; color: #7f8c8d; cursor: pointer; text-decoration: underline; display: inline-block; margin-top: 15px;}
 
         /* Box Báo cáo hệ thống */
         #reportPanel { background: #fdfefe; border: 2px dashed #3498db; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center; }
@@ -81,27 +89,52 @@
 </head>
 <body>
 
-<!-- MÀN HÌNH ĐĂNG NHẬP -->
+<!-- MÀN HÌNH ĐĂNG NHẬP (CÓ TÍNH NĂNG BẢO MẬT & KHÓA) -->
 <div id="loginOverlay">
     <div class="login-box">
-        <h2>Xác Thực Hệ Thống R&D</h2>
-        <p>Vui lòng khai báo thông tin để truy cập CSDL Thông tư 24</p>
         
-        <div class="input-group">
-            <label>Tên đăng nhập / Mã NV:</label>
-            <input type="text" id="usernameInput" placeholder="Ví dụ: User name" autocomplete="off">
-        </div>
-        <div class="input-group">
-            <label>Mật khẩu:</label>
-            <input type="password" id="pwdInput" placeholder="Nhập mật khẩu..." autocomplete="off">
-        </div>
-        <div class="input-group">
-            <label>Tên thiết bị truy cập:</label>
-            <input type="text" id="deviceInput" placeholder="VD: Laptop Công ty, iPhone..." autocomplete="off">
+        <!-- FORM ĐĂNG NHẬP CHÍNH -->
+        <div id="loginForm">
+            <h2>Xác Thực Hệ Thống R&D</h2>
+            <p>Vui lòng khai báo thông tin để truy cập CSDL Thông tư 24</p>
+            
+            <div class="input-group">
+                <label>Tên đăng nhập / Mã NV:</label>
+                <input type="text" id="usernameInput" placeholder="Ví dụ: truong" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>Mật khẩu:</label>
+                <input type="password" id="pwdInput" placeholder="Nhập mật khẩu..." autocomplete="off">
+                <span class="forgot-link" onclick="toggleForgotForm(true)">Quên mật khẩu?</span>
+            </div>
+            <div class="input-group">
+                <label>Tên thiết bị truy cập:</label>
+                <input type="text" id="deviceInput" placeholder="VD: Laptop Công ty, iPhone..." autocomplete="off">
+            </div>
+
+            <div id="loginError"></div>
+            <button id="loginBtn" onclick="verifyAccess()">Truy Cập Hệ Thống</button>
         </div>
 
-        <div id="loginError"></div>
-        <button id="loginBtn" onclick="verifyAccess()">Truy Cập Hệ Thống</button>
+        <!-- FORM KHÔI PHỤC MẬT KHẨU (Ẩn mặc định) -->
+        <div id="forgotForm">
+            <h2>Khôi Phục Mật Khẩu</h2>
+            <p>Nhập Tên đăng nhập và Email nội bộ của bạn. Hệ thống sẽ cấp lại mật khẩu ngẫu nhiên.</p>
+            
+            <div class="input-group">
+                <label>Tên đăng nhập / Mã NV:</label>
+                <input type="text" id="forgotUsername" placeholder="Ví dụ: truong" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>Email liên kết:</label>
+                <input type="email" id="forgotEmail" placeholder="Nhập email của bạn..." autocomplete="off">
+            </div>
+
+            <div id="forgotError" style="color: #e74c3c; font-weight: bold; margin: 10px 0; min-height: 20px; font-size: 14px;"></div>
+            <button id="forgotBtn" onclick="requestNewPassword()">Gửi Mật Khẩu Mới</button>
+            <span class="back-link" onclick="toggleForgotForm(false)">Quay lại Đăng nhập</span>
+        </div>
+
     </div>
 </div>
 
@@ -168,10 +201,10 @@
 
 <script>
     // ==========================================
-    // MODULE 1: XÁC THỰC MÁY CHỦ (SERVER-SIDE)
+    // MODULE 1: XÁC THỰC MÁY CHỦ VÀ QUÊN MẬT KHẨU
     // ==========================================
     
-    // Đã thay thế URL Web App của bạn
+    // ĐIỀN URL GOOGLE APPS SCRIPT MỚI CỦA BẠN VÀO ĐÂY
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKKVDoa9GFI4BRsnXH15kHaQOJqwjdShOexR_hXyNpbuG6j53Klhqa0UMz9VnitIoV_g/exec";
 
     const MAX_FAILS = 5;
@@ -182,6 +215,60 @@
     document.getElementById('deviceInput').value = localStorage.getItem('savedDeviceName') || "";
 
     checkLockStatus();
+
+    // -- CHUYỂN ĐỔI FORM ĐĂNG NHẬP / QUÊN MẬT KHẨU --
+    function toggleForgotForm(showForgot) {
+        if (showForgot) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('forgotForm').style.display = 'block';
+            document.getElementById('forgotUsername').value = document.getElementById('usernameInput').value;
+        } else {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('forgotForm').style.display = 'none';
+        }
+    }
+
+    // -- HÀM XỬ LÝ YÊU CẦU QUÊN MẬT KHẨU --
+    function requestNewPassword() {
+        const user = document.getElementById("forgotUsername").value.trim().toLowerCase();
+        const email = document.getElementById("forgotEmail").value.trim();
+        const errorMsg = document.getElementById("forgotError");
+        const btn = document.getElementById("forgotBtn");
+
+        if (!user || !email) {
+            errorMsg.style.color = "#e74c3c";
+            errorMsg.innerText = "Vui lòng nhập đầy đủ Tên và Email!";
+            return;
+        }
+
+        btn.innerText = "Đang gửi email xử lý...";
+        btn.disabled = true;
+        errorMsg.innerText = "";
+
+        const forgotUrl = `${GOOGLE_SCRIPT_URL}?type=forgot&user=${encodeURIComponent(user)}&email=${encodeURIComponent(email)}`;
+
+        fetch(forgotUrl)
+            .then(res => res.json())
+            .then(response => {
+                btn.innerText = "Gửi Mật Khẩu Mới";
+                btn.disabled = false;
+
+                if (response.status === true) {
+                    errorMsg.style.color = "#27ae60"; // Màu xanh lá báo thành công
+                    errorMsg.innerText = response.message;
+                    setTimeout(() => { toggleForgotForm(false); }, 3000); // Chờ 3s quay lại đăng nhập
+                } else {
+                    errorMsg.style.color = "#e74c3c"; // Màu đỏ báo lỗi
+                    errorMsg.innerText = response.message;
+                }
+            })
+            .catch(err => {
+                btn.innerText = "Gửi Mật Khẩu Mới";
+                btn.disabled = false;
+                errorMsg.style.color = "#e74c3c";
+                errorMsg.innerText = "Lỗi kết nối máy chủ! Vui lòng thử lại sau.";
+            });
+    }
 
     function checkLockStatus() {
         const lockUntil = localStorage.getItem("lockUntil");
@@ -305,6 +392,8 @@
     document.getElementById("pwdInput").addEventListener("keypress", function(e) { if (e.key === "Enter") verifyAccess(); });
     document.getElementById("deviceInput").addEventListener("keypress", function(e) { if (e.key === "Enter") verifyAccess(); });
     document.getElementById("usernameInput").addEventListener("keypress", function(e) { if (e.key === "Enter") document.getElementById("pwdInput").focus(); });
+    document.getElementById("forgotEmail").addEventListener("keypress", function(e) { if (e.key === "Enter") requestNewPassword(); });
+
 
     // ==========================================
     // MODULE 2: TẢI & TRÍCH XUẤT CƠ SỞ DỮ LIỆU
